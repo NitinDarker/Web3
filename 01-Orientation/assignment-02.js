@@ -13,3 +13,8 @@ do {
 
 console.log("Input: " + input);
 console.log("Hash: " + hash);
+
+// Here, 100xdevs is referred as 'data'
+// And, the num is referred as 'nonce'
+// Hence, input = data + nonce (input of sha-256 hash function)
+// And, "00000" is referred as prefix of hash (output prefix)
