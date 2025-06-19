@@ -1,4 +1,6 @@
 .vscode/
+.idea/
 *.exe
 *.out
 *.class
+*.iml
