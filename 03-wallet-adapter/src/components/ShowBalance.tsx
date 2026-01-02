@@ -5,27 +5,36 @@ import { useState } from 'react'
 export default function ShowBalance () {
   const wallet = useWallet()
   const { connection } = useConnection()
-  const [balance, setBalance] = useState('')
+  const [balance, setBalance] = useState<Number | null>(null)
+  const publicKey = wallet.publicKey
 
   async function getBalance () {
-    if (balance) {
-      setBalance('')
+    if (!publicKey) {
+      alert('Connect wallet first')
       return
     }
-    const publicKey = wallet.publicKey
-    const bal = await connection.getBalance(publicKey!)
-    setBalance((bal / LAMPORTS_PER_SOL).toString() + ' SOL')
+
+    if (balance !== null) {
+      setBalance(null)
+      return
+    }
+    const lamp = await connection.getBalance(publicKey!)
+    setBalance(lamp / LAMPORTS_PER_SOL)
   }
 
   return (
-    <div
-      onClick={getBalance}
-      className='flex flex-col justify-center items-center p-10 w-screen gap-3'
-    >
-      <button className='text-sm rounded-lg w-25 h-8 hover:cursor-pointer border-2 hover:bg-neutral-600 border-neutral-600 transition-all duration-500'>
-        Get Balance
+    <div className='flex flex-col justify-center items-center p-10 w-screen gap-3'>
+      <button
+        onClick={getBalance}
+        className='text-sm rounded-lg w-25 h-8 hover:cursor-pointer border-2 hover:bg-neutral-600 border-neutral-600 transition-all duration-500'
+      >
+        {balance === null ? 'Get Balance' : 'Hide Balance'}
       </button>
-      <div className='transition-all duration-300'>{balance}</div>
+      {balance !== null && (
+        <div className='transition-all duration-300'>
+          {balance.toString()} SOL
+        </div>
+      )}
     </div>
   )
 }

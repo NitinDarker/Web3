@@ -32,7 +32,7 @@ export default function Airdrop () {
       ></input>
       <button
         onClick={sendAirdrop}
-        className='w-lg text-white p-1 cursor-pointer bg-purple-700 hover:scale-105 transition-all duration-700 rounded-lg'
+        className='w-lg text-white p-1 cursor-pointer bg-violet-800 hover:scale-105 transition-all duration-700 rounded-lg'
       >
         Send Airdrop
       </button>
