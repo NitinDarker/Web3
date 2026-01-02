@@ -39,6 +39,7 @@ export default function Airdrop () {
           <p className='text-red-400'>Connect to a wallet first</p>
         )}
       </div>
+      <p className='text-lg font-bold pt-5'>Request Airdrop</p>
       <Input placeholder='Enter amount' ref={airdropCount}></Input>
       <Button onClick={sendAirdrop} variant='primary'>
         Request Airdrop

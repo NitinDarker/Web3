@@ -14,13 +14,14 @@ import Airdrop from './components/Airdrop'
 import './App.css'
 import ShowBalance from './components/ShowBalance'
 import DoTransaction from './components/DoTransaction'
+import { SignMessage } from './components/SignMessage'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
   const wallets = useMemo(() => [], [network])
 
   return (
-    <div className='bg-neutral-800 h-screen text-neutral-300'>
+    <div className='bg-neutral-800 h-full text-neutral-300'>
       <ConnectionProvider endpoint={'https://api.devnet.solana.com'}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
@@ -28,9 +29,10 @@ export default function App () {
               <WalletMultiButton />
               <WalletDisconnectButton />
             </div>
-            <Airdrop/>
             <ShowBalance />
+            <Airdrop/>
             <DoTransaction />
+            <SignMessage />
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

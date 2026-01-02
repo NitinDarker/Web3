@@ -43,7 +43,7 @@ export default function DoTransaction () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-3 w-screen pt-5'>
+    <div className='flex flex-col justify-center items-center gap-3 w-screen p-10'>
       <p className='text-lg font-bold'>Send SOL</p>
       <Input placeholder='To' ref={toRef} />
       <Input placeholder='SOL' ref={amtRef} />

@@ -24,7 +24,7 @@ export default function ShowBalance () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center p-10 w-screen gap-3'>
+    <div className='flex flex-col justify-center items-center pt-10 w-screen gap-3'>
       <Button onClick={getBalance} variant='secondary'>
         {balance === null ? 'Get Balance' : 'Hide Balance'}
       </Button>
