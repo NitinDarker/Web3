@@ -13,11 +13,11 @@ import '@solana/wallet-adapter-react-ui/styles.css'
 import Airdrop from './components/Airdrop'
 import './App.css'
 import ShowBalance from './components/ShowBalance'
+import DoTransaction from './components/DoTransaction'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
   const wallets = useMemo(() => [], [network])
-  // const alchEndpoint = "https://solana-devnet.g.alchemy.com/v2/uXtCr7o9UgYIOw9Ddi56R";
 
   return (
     <div className='bg-neutral-800 h-screen text-neutral-300'>
@@ -30,6 +30,7 @@ export default function App () {
             </div>
             <Airdrop/>
             <ShowBalance />
+            <DoTransaction />
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

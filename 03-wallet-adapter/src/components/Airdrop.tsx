@@ -1,6 +1,8 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { useRef } from 'react'
+import Button from '../ui/Button'
+import Input from '../ui/Input'
 
 export default function Airdrop () {
   const wallet = useWallet()
@@ -20,11 +22,11 @@ export default function Airdrop () {
     }
 
     const sol = Number(airdropCount.current.value)
-    const drop = await connection.requestAirdrop(
+    const dropped = await connection.requestAirdrop(
       publicKey,
       sol * LAMPORTS_PER_SOL
     )
-    console.log(drop)
+    console.log('dropped:', dropped)
   }
 
   return (
@@ -34,21 +36,13 @@ export default function Airdrop () {
         {publicKey !== null ? (
           <p>Your Public Key: {publicKey?.toString()}</p>
         ) : (
-          <p>Connect to a wallet first</p>
+          <p className='text-red-400'>Connect to a wallet first</p>
         )}
       </div>
-      <input
-        className='border border-neutral-400 rounded-lg p-1 text-sm w-lg'
-        type='text'
-        placeholder='Enter amount'
-        ref={airdropCount}
-      ></input>
-      <button
-        onClick={sendAirdrop}
-        className='w-lg text-white p-1 cursor-pointer bg-violet-800 hover:scale-105 transition-all duration-700 rounded-lg'
-      >
-        Send Airdrop
-      </button>
+      <Input placeholder='Enter amount' ref={airdropCount}></Input>
+      <Button onClick={sendAirdrop} variant='primary'>
+        Request Airdrop
+      </Button>
     </div>
   )
 }

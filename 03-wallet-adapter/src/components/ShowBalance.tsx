@@ -1,6 +1,7 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { useState } from 'react'
+import Button from '../ui/Button'
 
 export default function ShowBalance () {
   const wallet = useWallet()
@@ -24,12 +25,9 @@ export default function ShowBalance () {
 
   return (
     <div className='flex flex-col justify-center items-center p-10 w-screen gap-3'>
-      <button
-        onClick={getBalance}
-        className='text-sm rounded-lg w-25 h-8 hover:cursor-pointer border-2 hover:bg-neutral-600 border-neutral-600 transition-all duration-500'
-      >
+      <Button onClick={getBalance} variant='secondary'>
         {balance === null ? 'Get Balance' : 'Hide Balance'}
-      </button>
+      </Button>
       {balance !== null && (
         <div className='transition-all duration-300'>
           {balance.toString()} SOL
