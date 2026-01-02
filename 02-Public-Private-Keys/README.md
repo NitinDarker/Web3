@@ -1,40 +1,58 @@
-## `Uint8Array`
+# 02-Public-Private-Keys: Bytes & Encoding
 
-`Uint8Array` offers a more efficient way to handle byte data in JavaScript compared to regular arrays.
+This module covers how data is represented and encoded in blockchain systems - essential knowledge for working with wallets, keys, and addresses.
 
-### Why use `Uint8Array`?
+## Files Overview
 
-1.  **Space Efficiency:**
+### `Uint8Array.js`
+Demonstrates `Uint8Array` behavior, including automatic value wrapping for out-of-range values (256 becomes 0, etc.).
 
-    - **Native Array:** Each number (even 0 or 1) uses **64 bits (8 bytes)**.
-    - **`Uint8Array`:** Each value uses **8 bits (1 byte)**.
-    - **Result:** `Uint8Array` consumes **8x less memory** for byte data.
-
-2.  **Constraint Enforcement:**
-    - `Uint8Array` automatically ensures all elements are within the valid byte range (0-255). Values outside this range are wrapped (e.g., 256 becomes 0, -1 becomes 255).
-
-### Example:
-
-```javascript
-let bytes = new Uint8Array([0, 255, 127, 128]);
-console.log(bytes); // Uint8Array(4) [ 0, 255, 127, 128 ]
-
-// Value outside range wraps:
-let wrappedByte = new Uint8Array([256, -1]);
-console.log(wrappedByte); // Uint8Array(2) [ 0, 255 ]
+### `ascii-to-bytes.js`
+Converts a string to its byte representation using ASCII character codes.
+```
+"Hello" → [72, 101, 108, 108, 111]
 ```
 
-# Base58 Encoding
+### `bytes-to-ascii.js`
+Reverse operation - converts a byte array back to a readable string using `TextDecoder`.
+```
+[72, 101, 108, 108, 111] → "Hello"
+```
 
-Base58 is a binary-to-text encoding similar to Base64, but designed for **user-friendliness** by avoiding visually similar characters.
+### `base58.js`
+Encoding/decoding with Base58 using the `bs58` library. Used by Bitcoin and Solana for wallet addresses.
 
-### Key Characteristics:
+## Concepts
 
-- **Characters Used (58 total):**
+### Uint8Array
+A memory-efficient way to store byte data in JavaScript.
 
-  - Uppercase: `A-H`, `J-N`, `P-Z` (excludes `I`, `O`)
-  - Lowercase: `a-k`, `m-z` (excludes `l`)
-  - Numbers: `1-9` (excludes `0`)
-  - **Does NOT use:** `0`, `O`, `I`, `l`, `+`, `/`
+| Type | Memory per element |
+|------|-------------------|
+| Native Array | 64 bits (8 bytes) |
+| Uint8Array | 8 bits (1 byte) |
 
-- **Purpose:** To make encoded strings easier for humans to read, type, and reliably transcribe.
+Values automatically wrap to 0-255 range:
+```javascript
+new Uint8Array([256, -1]) // → [0, 255]
+```
+
+### Base58 Encoding
+A human-friendly encoding that excludes visually similar characters:
+- **Excluded:** `0`, `O`, `I`, `l`, `+`, `/`
+- **Used by:** Bitcoin addresses, Solana public keys
+
+### Why This Matters
+- Private keys are 32-byte arrays
+- Public keys are 32-byte (Ed25519) or 64-byte arrays
+- Wallet addresses are Base58-encoded public keys
+- Understanding these conversions is essential for signing transactions
+
+## Run
+
+```bash
+node Uint8Array.js
+node ascii-to-bytes.js
+node bytes-to-ascii.js
+node base58.js  # requires: npm install bs58
+```
