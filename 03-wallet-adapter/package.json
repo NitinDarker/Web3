@@ -18,8 +18,10 @@
     "@solana/wallet-standard-wallet-adapter-base": "^1.1.4",
     "@solana/wallet-standard-wallet-adapter-react": "^1.1.4",
     "@solana/web3.js": "^1.98.4",
+    "@tailwindcss/vite": "^4.1.18",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.18",
     "vite-plugin-node-polyfills": "^0.24.0"
   },
   "devDependencies": {
