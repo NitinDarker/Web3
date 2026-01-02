@@ -11,13 +11,19 @@ export default function Airdrop () {
   async function sendAirdrop () {
     if (!airdropCount.current) return
     const sol = Number(airdropCount.current.value)
-    const drop = await connection.requestAirdrop(wallet.publicKey!, sol * LAMPORTS_PER_SOL)
+    const drop = await connection.requestAirdrop(
+      wallet.publicKey!,
+      sol * LAMPORTS_PER_SOL
+    )
     console.log(drop)
   }
 
   return (
     <div className='flex flex-col justify-center items-center p-10 w-screen gap-3 trasition-all'>
-      Hi, Your Public Key: {publicKey}
+      <div>
+        <p className='text-center'>Hi</p>
+        <p>Your Public Key: {publicKey}</p>
+      </div>
       <input
         className='border border-neutral-400 rounded-lg p-1 text-sm w-lg'
         type='text'

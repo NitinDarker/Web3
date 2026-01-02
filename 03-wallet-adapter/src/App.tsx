@@ -12,6 +12,7 @@ import {
 import '@solana/wallet-adapter-react-ui/styles.css'
 import Airdrop from './components/Airdrop'
 import './App.css'
+import ShowBalance from './components/ShowBalance'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
@@ -28,6 +29,7 @@ export default function App () {
               <WalletDisconnectButton />
             </div>
             <Airdrop/>
+            <ShowBalance />
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
