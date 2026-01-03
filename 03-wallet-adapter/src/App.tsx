@@ -15,6 +15,7 @@ import './App.css'
 import ShowBalance from './components/ShowBalance'
 import DoTransaction from './components/DoTransaction'
 import { SignMessage } from './components/SignMessage'
+import Greet from './components/Greet'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
@@ -29,6 +30,7 @@ export default function App () {
               <WalletMultiButton />
               <WalletDisconnectButton />
             </div>
+            <Greet />
             <ShowBalance />
             <Airdrop/>
             <DoTransaction />
