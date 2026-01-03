@@ -7,6 +7,8 @@ interface ButtonProps {
   children: ReactNode
   className?: string
   variant?: VariantType
+  loading?: boolean
+  disabled?: boolean
 }
 
 const variants: Record<VariantType, string> = {
@@ -18,14 +20,21 @@ export default function Button ({
   onClick,
   className = '',
   children,
-  variant = 'primary'
+  variant = 'primary',
+  loading = false,
+  disabled = false
 }: ButtonProps) {
+  const isDisabled = loading || disabled
+
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg cursor-pointer transition-all duration-300 ${variants[variant]} ${className}`}
+      disabled={isDisabled}
+      className={`rounded-lg transition-all duration-300 ${variants[variant]} ${className} ${
+        isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+      }`}
     >
-      {children}
+      {loading ? 'Loading...' : children}
     </button>
   )
 }

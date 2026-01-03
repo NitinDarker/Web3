@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Input from '../ui/Input'
 import Button from '../ui/Button'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -15,10 +15,11 @@ export default function DoTransaction () {
   const publicKey = wallet.publicKey
   const toRef = useRef<HTMLInputElement>(null)
   const amtRef = useRef<HTMLInputElement>(null)
+  const [loading, setLoading] = useState(false)
 
   async function sendTransaction () {
     if (!publicKey) {
-      alert('Connect wallet first')
+      alert('Please connect your wallet first.')
       return
     }
 
@@ -26,28 +27,38 @@ export default function DoTransaction () {
       return
     }
 
-    const to = new PublicKey(toRef.current.value)
-    const amt = Number(amtRef.current.value)
+    try {
+      setLoading(true)
+      const to = new PublicKey(toRef.current.value)
+      const amt = Number(amtRef.current.value)
 
-    const transaction = new Transaction()
-    transaction.add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: to,
-        lamports: amt * LAMPORTS_PER_SOL
-      })
-    )
-    const txn = await wallet.sendTransaction(transaction, connection)
-    console.log('txn:', txn)
-    alert('Sent ' + amt + ' SOL to ' + to)
+      const transaction = new Transaction()
+      transaction.add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: to,
+          lamports: amt * LAMPORTS_PER_SOL
+        })
+      )
+      const txn = await wallet.sendTransaction(transaction, connection)
+      console.log('txn:', txn)
+      alert(`Successfully sent ${amt} SOL!`)
+      toRef.current.value = ''
+      amtRef.current.value = ''
+    } catch (error) {
+      console.error('Transaction failed:', error)
+      alert('Transaction failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-3 w-screen p-10'>
+    <div className='flex flex-col justify-center items-center gap-3 w-full max-w-md mx-auto p-10'>
       <p className='text-lg font-bold'>Send SOL</p>
       <Input placeholder='To' ref={toRef} />
       <Input placeholder='SOL' ref={amtRef} />
-      <Button onClick={sendTransaction}>Send SOL</Button>
+      <Button onClick={sendTransaction} loading={loading}>Send SOL</Button>
     </div>
   )
 }

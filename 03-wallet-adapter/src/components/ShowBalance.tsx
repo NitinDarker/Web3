@@ -6,7 +6,7 @@ import Button from '../ui/Button'
 export default function ShowBalance () {
   const wallet = useWallet()
   const { connection } = useConnection()
-  const [balance, setBalance] = useState<Number | null>(null)
+  const [balance, setBalance] = useState<number | null>(null)
   const publicKey = wallet.publicKey
 
   async function getBalance () {
@@ -24,7 +24,7 @@ export default function ShowBalance () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center pt-10 w-screen gap-3'>
+    <div className='flex flex-col justify-center items-center pt-10 w-full max-w-md mx-auto gap-3'>
       <Button onClick={getBalance} variant='secondary'>
         {balance === null ? 'Get Balance' : 'Hide Balance'}
       </Button>
