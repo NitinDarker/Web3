@@ -1,8 +1,9 @@
 {
-  "name": "03-wallet-adapter",
+  "name": "Solana-wallet-adapter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": "Nitin Sharma",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
