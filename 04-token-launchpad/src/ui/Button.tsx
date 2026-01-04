@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 type VariantType = 'primary' | 'secondary'
 
 interface ButtonProps {
-  onClick: () => void
+  onClick: () => void | Promise<void>
   children: ReactNode
   className?: string
   variant?: VariantType

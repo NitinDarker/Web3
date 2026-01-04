@@ -2,15 +2,24 @@ import Button from '../ui/Button'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
   createInitializeMint2Instruction,
+  ExtensionType,
   getMinimumBalanceForRentExemptMint,
+  getMintLen,
+  LENGTH_SIZE,
   MINT_SIZE,
-  TOKEN_PROGRAM_ID
+  TOKEN_2022_PROGRAM_ID,
+  TYPE_SIZE
 } from '@solana/spl-token'
 import { Keypair, SystemProgram, Transaction } from '@solana/web3.js'
+import Input from '../ui/Input'
+import { useRef } from 'react'
 
 export default function CreateToken () {
   const wallet = useWallet()
   const { connection } = useConnection()
+  const tokenNameRef = useRef<HTMLInputElement>(null)
+  const symbolRef = useRef<HTMLInputElement>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
 
   async function createToken () {
     if (!wallet.publicKey) {
@@ -18,11 +27,27 @@ export default function CreateToken () {
       return
     }
 
-    const programId = TOKEN_PROGRAM_ID
+    if (!tokenNameRef.current || !symbolRef.current || !imageRef.current) {
+      alert('Input fields cannot by empty!')
+      return
+    }
+
+    const programId = TOKEN_2022_PROGRAM_ID
     const mintKey = Keypair.generate()
     const lamports = await getMinimumBalanceForRentExemptMint(connection)
     const payer = wallet.publicKey
     const space = MINT_SIZE
+
+    const metadata = {
+      mint: mintKey.publicKey,
+      name: tokenNameRef.current.value,
+      symbol: symbolRef,
+      uri: imageRef,
+      additionalMetadata: []
+    }
+
+    const mintLen = getMintLen([ExtensionType.MetadataPointer])
+    const metadataLen = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length
 
     const transaction = new Transaction().add(
       SystemProgram.createAccount({
@@ -59,6 +84,9 @@ export default function CreateToken () {
   return (
     <div className='flex flex-col justify-center items-center gap-3 m-5'>
       <p className='font-bold text-lg'>Create a new Token</p>
+      <Input ref={tokenNameRef} placeholder='Token Name' />
+      <Input ref={symbolRef} placeholder='Token Symbol' />
+      <Input ref={imageRef} placeholder='Image URI' />
       <Button onClick={createToken}>Create Token</Button>
     </div>
   )
