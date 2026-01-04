@@ -23,7 +23,8 @@ export default function DoTransaction () {
       return
     }
 
-    if (!toRef.current || !amtRef.current) {
+    if (!toRef.current?.value || !amtRef.current?.value) {
+      alert('Please fill in all fields.')
       return
     }
 
@@ -54,7 +55,7 @@ export default function DoTransaction () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-3 w-full max-w-md mx-auto p-10'>
+    <div className='flex flex-col justify-center items-center gap-4 w-full max-w-md mx-auto p-10 pb-0'>
       <p className='text-lg font-bold'>Send SOL</p>
       <Input placeholder='To' ref={toRef} />
       <Input placeholder='SOL' ref={amtRef} />

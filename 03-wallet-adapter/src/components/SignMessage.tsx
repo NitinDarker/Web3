@@ -5,7 +5,7 @@ import Input from '../ui/Input'
 import Button from '../ui/Button'
 import { useRef, useState } from 'react'
 
-export function SignMessage () {
+export default function SignMessage () {
   const wallet = useWallet()
   const msgRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,8 @@ export function SignMessage () {
       return
     }
 
-    if (!msgRef.current) {
+    if (!msgRef.current?.value) {
+      alert('Please enter a message.')
       return
     }
 
@@ -33,13 +34,14 @@ export function SignMessage () {
       setLoading(true)
       const message = msgRef.current.value
       const encodedMessage = new TextEncoder().encode(message)
-      const signature = await signMessage(encodedMessage)
+      const sig = await signMessage(encodedMessage)
 
-      if (!ed25519.verify(signature, encodedMessage, publicKey.toBytes())) {
+      if (!ed25519.verify(sig, encodedMessage, publicKey.toBytes())) {
         throw new Error('Message signature invalid!')
       }
 
-      setSignature(bs58.encode(signature))
+      setSignature(bs58.encode(sig))
+      alert('Message signed successfully!')
       msgRef.current.value = ''
     } catch (error) {
       console.error('Signing failed:', error)
@@ -57,7 +59,7 @@ export function SignMessage () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center p-10 gap-3'>
+    <div className='flex flex-col justify-center items-center p-10 gap-4'>
       <p className='text-lg font-bold'>Sign Message</p>
       <Input placeholder='Enter message' ref={msgRef} />
       <Button onClick={onClick} loading={loading}>

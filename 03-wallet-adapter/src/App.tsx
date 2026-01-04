@@ -9,13 +9,13 @@ import {
   WalletModalProvider,
   WalletMultiButton
 } from '@solana/wallet-adapter-react-ui'
-import '@solana/wallet-adapter-react-ui/styles.css'
 import Airdrop from './components/Airdrop'
-import './App.css'
 import ShowBalance from './components/ShowBalance'
 import DoTransaction from './components/DoTransaction'
-import { SignMessage } from './components/SignMessage'
+import SignMessage from './components/SignMessage'
 import Greet from './components/Greet'
+import '@solana/wallet-adapter-react-ui/styles.css'
+import './App.css'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
@@ -29,10 +29,13 @@ export default function App () {
             <div className='flex flex-col items-center justify-center gap-3 pt-5'>
               <WalletMultiButton />
               <WalletDisconnectButton />
+              <p className='text-neutral-500 text-center text-sm'>
+                Connected to Devnet
+              </p>
             </div>
             <Greet />
             <ShowBalance />
-            <Airdrop/>
+            <Airdrop />
             <DoTransaction />
             <SignMessage />
           </WalletModalProvider>

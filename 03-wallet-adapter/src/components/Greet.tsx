@@ -8,7 +8,7 @@ export default function Greet () {
       <div>
         <p className='text-center font-bold'>Hi</p>
         {publicKey !== null ? (
-          <p>Your Public Key: {publicKey?.toString()}</p>
+          <p>Your Public Key: {publicKey.toString()}</p>
         ) : (
           <p className='text-red-400'>Please connect your wallet first.</p>
         )}

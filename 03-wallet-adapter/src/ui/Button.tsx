@@ -13,7 +13,7 @@ interface ButtonProps {
 
 const variants: Record<VariantType, string> = {
   primary: 'w-lg text-white p-1 bg-violet-800 hover:scale-105',
-  secondary: 'text-sm w-25 h-8 border-2 border-neutral-600 hover:bg-neutral-600'
+  secondary: 'w-10 text-sm w-24 h-8 border-2 border-neutral-600 hover:bg-neutral-600'
 }
 
 export default function Button ({

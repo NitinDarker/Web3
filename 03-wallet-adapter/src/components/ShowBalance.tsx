@@ -11,7 +11,7 @@ export default function ShowBalance () {
 
   async function getBalance () {
     if (!publicKey) {
-      alert('Connect wallet first')
+      alert('Please connect your wallet first.')
       return
     }
 
@@ -19,12 +19,12 @@ export default function ShowBalance () {
       setBalance(null)
       return
     }
-    const lamp = await connection.getBalance(publicKey!)
+    const lamp = await connection.getBalance(publicKey)
     setBalance(lamp / LAMPORTS_PER_SOL)
   }
 
   return (
-    <div className='flex flex-col justify-center items-center pt-10 w-full max-w-md mx-auto gap-3'>
+    <div className='flex flex-col justify-center items-center pt-10 pb-5 w-full max-w-md mx-auto gap-4'>
       <Button onClick={getBalance} variant='secondary'>
         {balance === null ? 'Get Balance' : 'Hide Balance'}
       </Button>

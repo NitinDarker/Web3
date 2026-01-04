@@ -17,12 +17,16 @@ export default function Airdrop () {
       return
     }
 
-    if (!airdropCount.current) {
+    if (!airdropCount.current?.value) {
       alert('Please enter an amount.')
       return
     }
 
     const sol = Number(airdropCount.current.value)
+    if (isNaN(sol) || sol <= 0) {
+      alert('Please enter a valid positive amount.')
+      return
+    }
 
     try {
       setLoading(true)
@@ -42,7 +46,7 @@ export default function Airdrop () {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center p-10 pb-0 w-full max-w-md mx-auto gap-3 transition-all'>
+    <div className='flex flex-col justify-center items-center p-10 py-0 w-full max-w-md mx-auto gap-4 transition-all'>
       <p className='text-lg font-bold pt-5'>Request Airdrop</p>
       <Input placeholder='Enter amount' ref={airdropCount}></Input>
       <Button onClick={sendAirdrop} variant='primary' loading={loading}>
