@@ -2,6 +2,8 @@
 
 A React dApp demonstrating Solana wallet integration using `@solana/wallet-adapter`.
 
+> Deployed at: https://sol-wallet-adap.vercel.app/
+
 ## Features
 
 - **Connect Wallet** - Connect to Phantom, Solflare, and other Solana wallets
