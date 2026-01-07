@@ -212,7 +212,7 @@ export default function CreateToken () {
         <Input ref={tokenNameRef} placeholder='Token Name' />
         <Input ref={symbolRef} placeholder='Token Symbol' />
         <Input ref={imageRef} placeholder='Image URL' />
-        <Button onClick={createToken}>Create Token</Button>
+        <Button onClick={createToken} loading={isLoading}>Create Token</Button>
         {mintPublicKey && (
           <div className='flex flex-col items-center gap-2 mt-4 p-4 pb-0 bg-neutral-800 rounded-lg max-w-md'>
             <p className='text-sm text-neutral-400'>Token Mint Public Key:</p>
