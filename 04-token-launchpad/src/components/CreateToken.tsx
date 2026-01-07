@@ -59,7 +59,7 @@ export default function CreateToken () {
     }
 
     if (!tokenNameRef.current?.value || !symbolRef.current?.value) {
-      alert('Input fields cannot by empty!')
+      alert('Input fields cannot be empty!')
       return
     }
 
@@ -108,6 +108,13 @@ export default function CreateToken () {
         mintLen + metadataLen
       )
 
+      const associatedToken = getAssociatedTokenAddressSync(
+        mintKey.publicKey,
+        payer,
+        false,
+        programId
+      )
+
       const transaction = new Transaction().add(
         SystemProgram.createAccount({
           fromPubkey: payer,
@@ -138,49 +145,14 @@ export default function CreateToken () {
           uri: URI,
           mintAuthority: payer,
           updateAuthority: payer
-        })
-      )
-
-      const { blockhash, lastValidBlockHeight } =
-        await connection.getLatestBlockhash()
-      transaction.feePayer = payer
-      transaction.recentBlockhash = blockhash
-      transaction.partialSign(mintKey)
-
-      let sig = await wallet.sendTransaction(transaction, connection)
-      await connection.confirmTransaction(
-        { signature: sig, blockhash, lastValidBlockHeight },
-        'confirmed'
-      )
-      setMintPublicKey(mintKey.publicKey.toBase58())
-      console.log(`Token mint created at ${mintPublicKey}`)
-
-      const associatedToken = getAssociatedTokenAddressSync(
-        mintKey.publicKey,
-        payer,
-        false,
-        programId
-      )
-
-      const transaction2 = new Transaction().add(
+        }),
         createAssociatedTokenAccountInstruction(
           payer,
           associatedToken,
           payer,
           mintKey.publicKey,
           programId
-        )
-      )
-
-      sig = await wallet.sendTransaction(transaction2, connection)
-      await connection.confirmTransaction(
-        { signature: sig, blockhash, lastValidBlockHeight },
-        'confirmed'
-      )
-      setAtaKey(associatedToken.toBase58())
-      console.log('ATA created at', ataKey)
-
-      const transaction3 = new Transaction().add(
+        ),
         createMintToInstruction(
           mintKey.publicKey,
           associatedToken,
@@ -191,11 +163,24 @@ export default function CreateToken () {
         )
       )
 
-      sig = await wallet.sendTransaction(transaction3, connection)
+      const { blockhash, lastValidBlockHeight } =
+        await connection.getLatestBlockhash()
+      transaction.feePayer = payer
+      transaction.recentBlockhash = blockhash
+      transaction.partialSign(mintKey)
+
+      const sig = await wallet.sendTransaction(transaction, connection)
       await connection.confirmTransaction(
         { signature: sig, blockhash, lastValidBlockHeight },
         'confirmed'
       )
+
+      const mintAddress = mintKey.publicKey.toBase58()
+      const ataAddress = associatedToken.toBase58()
+      setMintPublicKey(mintAddress)
+      setAtaKey(ataAddress)
+      console.log(`Token mint created at ${mintAddress}`)
+      console.log(`ATA created at ${ataAddress}`)
       console.log('Token minted successfully!')
     } catch (e) {
       console.log(e)
