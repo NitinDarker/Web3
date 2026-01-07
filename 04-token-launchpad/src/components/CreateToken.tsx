@@ -1,30 +1,56 @@
-import Button from '../ui/Button'
+import { useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
+  createAssociatedTokenAccountInstruction,
   createInitializeMetadataPointerInstruction,
   createInitializeMint2Instruction,
+  createMintToInstruction,
   ExtensionType,
+  getAssociatedTokenAddressSync,
   getMintLen,
   LENGTH_SIZE,
   TOKEN_2022_PROGRAM_ID,
   TYPE_SIZE
 } from '@solana/spl-token'
-import { Keypair, SystemProgram, Transaction } from '@solana/web3.js'
-import Input from '../ui/Input'
-import { useRef, useState } from 'react'
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  SystemProgram,
+  Transaction
+} from '@solana/web3.js'
 import {
   createInitializeInstruction,
   pack,
   type TokenMetadata
 } from '@solana/spl-token-metadata'
+import Button from '../ui/Button'
+import Input from '../ui/Input'
+import uploadToCloud from '../lib/uploadToCloud'
 
 export default function CreateToken () {
-  const wallet = useWallet()
-  const { connection } = useConnection()
   const tokenNameRef = useRef<HTMLInputElement>(null)
   const symbolRef = useRef<HTMLInputElement>(null)
   const imageRef = useRef<HTMLInputElement>(null)
+  const descRef = useRef<HTMLInputElement>(null)
+  const wallet = useWallet()
+  const { connection } = useConnection()
   const [mintPublicKey, setMintPublicKey] = useState<string | null>(null)
+  const [ataKey, setAtaKey] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  function copyMintKey () {
+    if (mintPublicKey) {
+      navigator.clipboard.writeText(mintPublicKey)
+      alert('Token Mint Public Key copied to clipboard!')
+    }
+  }
+
+  function copyAtaKey () {
+    if (ataKey) {
+      navigator.clipboard.writeText(ataKey)
+      alert('ATA Public Key copied to clipboard!')
+    }
+  }
 
   async function createToken () {
     if (!wallet.publicKey) {
@@ -32,32 +58,56 @@ export default function CreateToken () {
       return
     }
 
-    if (!tokenNameRef.current?.value || !symbolRef.current?.value || !imageRef.current?.value) {
+    if (!tokenNameRef.current?.value || !symbolRef.current?.value) {
       alert('Input fields cannot by empty!')
       return
     }
 
-    const programId = TOKEN_2022_PROGRAM_ID
-    const mintKey = Keypair.generate()
-    const payer = wallet.publicKey
-
-    const metadata: TokenMetadata = {
-      mint: mintKey.publicKey,
-      name: tokenNameRef.current.value,
-      symbol: symbolRef.current.value,
-      uri: imageRef.current.value,
-      additionalMetadata: []
-    }
-    console.log("Metadata:", metadata);
-
-    const mintLen = getMintLen([ExtensionType.MetadataPointer])
-    const metadataLen = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length
-    const lamports = await connection.getMinimumBalanceForRentExemption(
-      mintLen + metadataLen
-    )
-    console.log("Lamports:", lamports)
-
     try {
+      setIsLoading(true)
+      const programId = TOKEN_2022_PROGRAM_ID
+      const mintKey = Keypair.generate()
+      const payer = wallet.publicKey
+      const decimals = 9
+      const initialAmount = 1 * LAMPORTS_PER_SOL
+
+      const jsonData = {
+        name: tokenNameRef.current!.value,
+        symbol: symbolRef.current!.value,
+        description: descRef.current?.value ?? '',
+        image: imageRef.current?.value ?? '',
+        attributes: [
+          {
+            trait_type: 'Item',
+            value: 'Developer Portal'
+          }
+        ]
+      }
+
+      const URI: string = await uploadToCloud(jsonData)
+
+      if (!URI) {
+        console.error('Failed to upload the metadata to cloudinary')
+        throw new Error('Failed to get a valid URI from cloud upload')
+      }
+
+      const metadata: TokenMetadata = {
+        mint: mintKey.publicKey,
+        name: tokenNameRef.current.value,
+        symbol: symbolRef.current.value,
+        uri: URI,
+        additionalMetadata: descRef.current?.value
+          ? [['description', descRef.current.value]]
+          : []
+      }
+      console.log('Metadata:', metadata)
+
+      const mintLen = getMintLen([ExtensionType.MetadataPointer])
+      const metadataLen = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length
+      const lamports = await connection.getMinimumBalanceForRentExemption(
+        mintLen + metadataLen
+      )
+
       const transaction = new Transaction().add(
         SystemProgram.createAccount({
           fromPubkey: payer,
@@ -68,26 +118,26 @@ export default function CreateToken () {
         }),
         createInitializeMetadataPointerInstruction(
           mintKey.publicKey,
-          wallet.publicKey,
+          payer,
           mintKey.publicKey,
-          TOKEN_2022_PROGRAM_ID
+          programId
         ),
         createInitializeMint2Instruction(
           mintKey.publicKey,
-          9,
+          decimals,
           payer,
-          payer,
+          null,
           programId
         ),
         createInitializeInstruction({
-          programId: TOKEN_2022_PROGRAM_ID,
+          programId: programId,
           mint: mintKey.publicKey,
           metadata: mintKey.publicKey,
           name: metadata.name,
           symbol: metadata.symbol,
-          uri: metadata.uri,
-          mintAuthority: wallet.publicKey,
-          updateAuthority: wallet.publicKey
+          uri: URI,
+          mintAuthority: payer,
+          updateAuthority: payer
         })
       )
 
@@ -97,33 +147,103 @@ export default function CreateToken () {
       transaction.recentBlockhash = blockhash
       transaction.partialSign(mintKey)
 
-      const sig = await wallet.sendTransaction(transaction, connection)
+      let sig = await wallet.sendTransaction(transaction, connection)
       await connection.confirmTransaction(
         { signature: sig, blockhash, lastValidBlockHeight },
         'confirmed'
       )
-      console.log(`Token mint created at ${mintKey.publicKey.toBase58()}`)
-      alert(`Token mint created successfully!`)
       setMintPublicKey(mintKey.publicKey.toBase58())
+      console.log(`Token mint created at ${mintPublicKey}`)
+
+      const associatedToken = getAssociatedTokenAddressSync(
+        mintKey.publicKey,
+        payer,
+        false,
+        programId
+      )
+
+      const transaction2 = new Transaction().add(
+        createAssociatedTokenAccountInstruction(
+          payer,
+          associatedToken,
+          payer,
+          mintKey.publicKey,
+          programId
+        )
+      )
+
+      sig = await wallet.sendTransaction(transaction2, connection)
+      await connection.confirmTransaction(
+        { signature: sig, blockhash, lastValidBlockHeight },
+        'confirmed'
+      )
+      setAtaKey(associatedToken.toBase58())
+      console.log('ATA created at', ataKey)
+
+      const transaction3 = new Transaction().add(
+        createMintToInstruction(
+          mintKey.publicKey,
+          associatedToken,
+          payer,
+          initialAmount,
+          [],
+          programId
+        )
+      )
+
+      sig = await wallet.sendTransaction(transaction3, connection)
+      await connection.confirmTransaction(
+        { signature: sig, blockhash, lastValidBlockHeight },
+        'confirmed'
+      )
+      console.log('Token minted successfully!')
     } catch (e) {
       console.log(e)
       alert('Token creation failed!')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className='flex flex-col justify-center items-center gap-3 m-5'>
-      <p className='font-bold text-lg'>Create a new Token</p>
-      <Input ref={tokenNameRef} placeholder='Token Name' />
-      <Input ref={symbolRef} placeholder='Token Symbol' />
-      <Input ref={imageRef} placeholder='Image URI' />
-      <Button onClick={createToken}>Create Token</Button>
-      {mintPublicKey && (
-        <div>
-          <p>Mint Public Key: </p>
-          <p>{mintPublicKey}</p>
-        </div>
-      )}
+    <div className='w-full flex justify-center items-center'>
+      <div className='flex flex-col justify-center items-center gap-5 m-5 border-2 border-neutral-600 rounded-2xl p-5 w-xl transition-all duration-500 shadow-lg shadow-neutral-800 bg-neutral-800'>
+        <p className='font-bold text-lg'>Create a new Token</p>
+        <Input ref={tokenNameRef} placeholder='Token Name' />
+        <Input ref={symbolRef} placeholder='Token Symbol' />
+        <Input ref={imageRef} placeholder='Image URL' />
+        <Button onClick={createToken}>Create Token</Button>
+        {mintPublicKey && (
+          <div className='flex flex-col items-center gap-2 mt-4 p-4 pb-0 bg-neutral-800 rounded-lg max-w-md'>
+            <p className='text-sm text-neutral-400'>Token Mint Public Key:</p>
+            <p className='text-xs break-all text-center font-mono'>
+              {mintPublicKey}
+            </p>
+            <Button
+              onClick={copyMintKey}
+              variant='secondary'
+              loading={isLoading}
+            >
+              Copy
+            </Button>
+          </div>
+        )}
+        {ataKey && (
+          <div className='flex flex-col items-center gap-2 mt-4 p-4 pt-0 bg-neutral-800 rounded-lg max-w-md'>
+            <p className='text-sm text-neutral-400'>
+              Associated Token Account Public Key:
+            </p>
+            <p className='text-xs break-all text-center font-mono'>{ataKey}</p>
+            <Button
+              onClick={copyAtaKey}
+              variant='secondary'
+              loading={isLoading}
+            >
+              Copy
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
