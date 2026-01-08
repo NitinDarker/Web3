@@ -72,8 +72,8 @@ export default function CreateToken () {
       const initialAmount = 1 * LAMPORTS_PER_SOL
 
       const jsonData = {
-        name: tokenNameRef.current!.value,
-        symbol: symbolRef.current!.value,
+        name: tokenNameRef.current?.value ?? '',
+        symbol: symbolRef.current?.value ?? '',
         description: descRef.current?.value ?? '',
         image: imageRef.current?.value ?? '',
         attributes: [
@@ -86,15 +86,10 @@ export default function CreateToken () {
 
       const URI: string = await uploadToCloud(jsonData)
 
-      if (!URI) {
-        console.error('Failed to upload the metadata to cloudinary')
-        throw new Error('Failed to get a valid URI from cloud upload')
-      }
-
       const metadata: TokenMetadata = {
         mint: mintKey.publicKey,
-        name: tokenNameRef.current.value,
-        symbol: symbolRef.current.value,
+        name: tokenNameRef.current?.value ?? '',
+        symbol: symbolRef.current?.value ?? '',
         uri: URI,
         additionalMetadata: descRef.current?.value
           ? [['description', descRef.current.value]]
@@ -196,8 +191,11 @@ export default function CreateToken () {
         <p className='font-bold text-lg'>Create a new Token</p>
         <Input ref={tokenNameRef} placeholder='Token Name' />
         <Input ref={symbolRef} placeholder='Token Symbol' />
+        <Input ref={descRef} placeholder='Description' />
         <Input ref={imageRef} placeholder='Image URL' />
-        <Button onClick={createToken} loading={isLoading}>Create Token</Button>
+        <Button onClick={createToken} loading={isLoading}>
+          Create Token
+        </Button>
         {mintPublicKey && (
           <div className='flex flex-col items-center gap-2 mt-4 p-4 pb-0 bg-neutral-800 rounded-lg max-w-md'>
             <p className='text-sm text-neutral-400'>Token Mint Public Key:</p>

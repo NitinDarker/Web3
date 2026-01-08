@@ -20,7 +20,7 @@ const uploadToCloud = async (jsonData: MetadataJson): Promise<string> => {
   }
 
   const UPLOAD_PRESET =
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "token_lauchpad";
+    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "token_launchpad";
   const URL = `https://api.cloudinary.com/v1_1/${CLOUDNAME}/raw/upload`;
 
   if (!jsonData.name || !jsonData.symbol) {
