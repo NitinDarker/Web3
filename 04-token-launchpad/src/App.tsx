@@ -12,24 +12,29 @@ import {
 import '@solana/wallet-adapter-react-ui/styles.css'
 import './App.css'
 import CreateToken from './components/CreateToken'
+import { ToastProvider } from './ui/Toast'
+
+const RPC_ENDPOINT = import.meta.env.VITE_SOLANA_RPC_URL || 'https://api.devnet.solana.com'
 
 export default function App () {
   const network = WalletAdapterNetwork.Devnet
   const wallets = useMemo(() => [], [network])
 
   return (
-    <div className='bg-neutral-950 min-h-full text-neutral-100'>
-      <ConnectionProvider endpoint={'https://api.devnet.solana.com'}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <div className='flex flex-row items-center justify-center gap-3 pt-5'>
-              <WalletMultiButton />
-              <WalletDisconnectButton />
-            </div>
-            <CreateToken />
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
-    </div>
+    <ToastProvider>
+      <div className='bg-neutral-950 min-h-full text-neutral-100'>
+        <ConnectionProvider endpoint={RPC_ENDPOINT}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>
+              <div className='flex flex-row items-center justify-center gap-3 pt-5'>
+                <WalletMultiButton />
+                <WalletDisconnectButton />
+              </div>
+              <CreateToken />
+            </WalletModalProvider>
+          </WalletProvider>
+        </ConnectionProvider>
+      </div>
+    </ToastProvider>
   )
 }

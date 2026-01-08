@@ -1,4 +1,8 @@
-export function copyToClipboard(text: string, label: string): void {
-  navigator.clipboard.writeText(text);
-  alert(`${label} copied to clipboard!`);
+export async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    return false
+  }
 }

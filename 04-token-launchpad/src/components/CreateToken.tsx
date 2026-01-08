@@ -1,16 +1,51 @@
 import { useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import Button from '../ui/Button'
+import { SendTransactionError } from '@solana/web3.js'
 import TokenForm from './TokenForm'
+import PublicKeyCard from './PublicKeyCard'
+import { useToast } from '../ui/Toast'
 import {
   buildCreateTokenTransaction,
   type TokenFormData
 } from '../lib/createTokenTransaction'
-import { copyToClipboard } from '../lib/clipboard'
+
+function getErrorMessage (error: unknown): string {
+  if (error instanceof SendTransactionError) {
+    return 'Transaction failed. Please check your wallet balance.'
+  }
+
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase()
+
+    if (message.includes('user rejected')) {
+      return 'Transaction cancelled by user'
+    }
+    if (message.includes('insufficient')) {
+      return 'Insufficient SOL balance for transaction'
+    }
+    if (message.includes('timeout') || message.includes('timed out')) {
+      return 'Transaction timed out. Please try again.'
+    }
+    if (message.includes('blockhash')) {
+      return 'Transaction expired. Please try again.'
+    }
+    if (message.includes('network') || message.includes('fetch')) {
+      return 'Network error. Please check your connection.'
+    }
+    if (message.includes('cloudinary') || message.includes('upload')) {
+      return 'Failed to upload metadata. Please try again.'
+    }
+
+    return error.message
+  }
+
+  return 'An unexpected error occurred'
+}
 
 export default function CreateToken () {
   const wallet = useWallet()
   const { connection } = useConnection()
+  const { showToast } = useToast()
   const [mintPublicKey, setMintPublicKey] = useState<string | null>(null)
   const [ataKey, setAtaKey] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -19,7 +54,12 @@ export default function CreateToken () {
 
   async function handleCreateToken (formData: TokenFormData) {
     if (!wallet.publicKey) {
-      alert('Connect to a wallet first!')
+      showToast('Connect to a wallet first!', 'error')
+      return
+    }
+
+    if (!wallet.signTransaction) {
+      showToast('Wallet does not support signing transactions', 'error')
       return
     }
 
@@ -46,12 +86,10 @@ export default function CreateToken () {
 
       setMintPublicKey(result.mintAddress)
       setAtaKey(result.ataAddress)
-      console.log(`Token mint created at ${result.mintAddress}`)
-      console.log(`ATA created at ${result.ataAddress}`)
-      console.log('Token minted successfully!')
-    } catch (e) {
-      console.log(e)
-      alert('Token creation failed!')
+      showToast('Token created successfully!', 'success')
+    } catch (error) {
+      console.error('Token creation error:', error)
+      showToast(getErrorMessage(error), 'error')
     } finally {
       setIsLoading(false)
     }
@@ -74,40 +112,16 @@ export default function CreateToken () {
         {(mintPublicKey || ataKey) && (
           <div className='flex gap-4 mt-4'>
             {mintPublicKey && (
-              <div className='flex flex-col items-center gap-2 p-4 bg-neutral-800 rounded-lg border border-neutral-700'>
-                <p className='text-sm text-neutral-400'>
-                  Token Mint Public Key:
-                </p>
-                <p className='text-xs break-all text-center font-mono max-w-48 text-neutral-300'>
-                  {mintPublicKey}
-                </p>
-                <Button
-                  onClick={() =>
-                    copyToClipboard(mintPublicKey, 'Token Mint Public Key')
-                  }
-                  variant='secondary'
-                >
-                  Copy
-                </Button>
-              </div>
+              <PublicKeyCard
+                label='Token Mint Public Key'
+                publicKey={mintPublicKey}
+              />
             )}
             {ataKey && (
-              <div className='flex flex-col items-center gap-2 p-4 bg-neutral-800 rounded-lg border border-neutral-700'>
-                <p className='text-sm text-neutral-400'>
-                  Associated Token Account:
-                </p>
-                <p className='text-xs break-all text-center font-mono max-w-48 text-neutral-300'>
-                  {ataKey}
-                </p>
-                <Button
-                  onClick={() =>
-                    copyToClipboard(ataKey, 'Associated Token Account')
-                  }
-                  variant='secondary'
-                >
-                  Copy
-                </Button>
-              </div>
+              <PublicKeyCard
+                label='Associated Token Account'
+                publicKey={ataKey}
+              />
             )}
           </div>
         )}
