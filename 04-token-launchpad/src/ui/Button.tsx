@@ -12,8 +12,9 @@ interface ButtonProps {
 }
 
 const variants: Record<VariantType, string> = {
-  primary: 'w-lg text-white p-1.5 bg-violet-800 hover:scale-105',
-  secondary: 'text-sm w-25 h-8 border-2 border-neutral-600 hover:bg-neutral-600'
+  primary:
+    'text-white px-10 py-2 text-base font-semibold bg-violet-600 hover:bg-violet-500 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/30',
+  secondary: 'text-sm w-25 h-8 border border-neutral-700 hover:bg-neutral-700'
 }
 
 export default function Button ({
@@ -30,7 +31,9 @@ export default function Button ({
     <button
       onClick={onClick}
       disabled={isDisabled}
-      className={`rounded-lg transition-all duration-300 ${variants[variant]} ${className} ${
+      className={`rounded-lg transition-all duration-500 ${
+        variants[variant]
+      } ${className} ${
         isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
       }`}
     >

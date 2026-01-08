@@ -1,24 +1,25 @@
 import React from 'react'
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
-  ref?: React.Ref<HTMLInputElement>
+  ref?: React.Ref<HTMLTextAreaElement>
 }
 
-export default function Input ({
+export default function Textarea ({
   ref,
   className,
-  type = 'text',
   label,
+  rows = 4,
   ...props
-}: InputProps) {
+}: TextareaProps) {
   return (
     <div className='flex flex-col flex-1'>
-      <label className='text-sm text-neutral-400 mb-1'>
+      <label className='text-sm text-neutral-400 mb-1 cursor-pointer'>
         {label}
-        <input
+        <textarea
           className={`
-            border rounded-lg p-2 pl-3 text-sm w-full mt-1
+            border rounded-lg p-2 pl-3 text-sm w-full mt-1 resize-none
             bg-neutral-800 text-neutral-100 placeholder-neutral-500
             hover:border-neutral-600
             focus:outline-none focus:ring-2 focus:border-transparent
@@ -27,7 +28,7 @@ export default function Input ({
             border-neutral-700 focus:ring-violet-500
             ${className ?? ''}
           `}
-          type={type}
+          rows={rows}
           ref={ref}
           {...props}
         />

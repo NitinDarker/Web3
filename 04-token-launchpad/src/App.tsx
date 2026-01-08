@@ -18,7 +18,7 @@ export default function App () {
   const wallets = useMemo(() => [], [network])
 
   return (
-    <div className='bg-neutral-900 h-screen text-neutral-300'>
+    <div className='bg-neutral-950 min-h-full text-neutral-100'>
       <ConnectionProvider endpoint={'https://api.devnet.solana.com'}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
