@@ -1,7 +1,7 @@
 export default function GithubLink () {
   return (
     <a
-      href='https://github.com/NitinDarker/Web3/tree/main/04-token-launchpad'
+      href='https://github.com/NitinDarker/Solana-Token-Launchpad'
       target='_blank'
       rel='noopener noreferrer'
       className='absolute top-5 right-5 flex items-center gap-2 text-neutral-400 hover:text-neutral-100 transition-colors'

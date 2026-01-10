@@ -70,7 +70,7 @@ src/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/NitinDarker/Web3.git
+   git clone https://github.com/NitinDarker/Solana-Token-Launchpad
    cd Web3/04-token-launchpad
    ```
 
