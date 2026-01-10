@@ -1,6 +1,5 @@
 {
   "name": "04-token-launchpad",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
   "author": "Nitin Sharma",
@@ -11,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.7.9",
     "@solana/buffer-layout-utils": "^0.3.0",
     "@solana/spl-token": "^0.4.14",
     "@solana/spl-token-metadata": "^0.1.6",
@@ -24,8 +22,13 @@
     "@solana/wallet-standard-wallet-adapter-react": "^1.1.4",
     "@solana/web3.js": "^1.98.4",
     "@tailwindcss/vite": "^4.1.18",
+    "axios": "^1.7.9",
+    "clsx": "^2.1.1",
+    "motion": "^12.25.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hot-toast": "^2.6.0",
+    "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

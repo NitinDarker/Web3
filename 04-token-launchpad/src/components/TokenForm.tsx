@@ -1,9 +1,9 @@
 import { useRef } from 'react'
+import toast from 'react-hot-toast'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Toggle from '../ui/Toggle'
-import { useToast } from '../ui/Toast'
 import type { TokenFormData } from '../lib/createTokenTransaction'
 
 interface TokenFormProps {
@@ -23,7 +23,6 @@ export default function TokenForm ({
   onRevokeMintChange,
   onRevokeFreezeChange
 }: TokenFormProps) {
-  const { showToast } = useToast()
   const tokenNameRef = useRef<HTMLInputElement>(null)
   const symbolRef = useRef<HTMLInputElement>(null)
   const decimalsRef = useRef<HTMLInputElement>(null)
@@ -38,22 +37,22 @@ export default function TokenForm ({
     const supplyValue = parseFloat(initialSupplyRef.current?.value || '1')
 
     if (!name) {
-      showToast('Token name is required', 'error')
+      toast.error('Token name is required')
       return
     }
 
     if (!symbol) {
-      showToast('Token symbol is required', 'error')
+      toast.error('Token symbol is required')
       return
     }
 
     if (isNaN(decimalsValue) || decimalsValue < 0 || decimalsValue > 9) {
-      showToast('Decimals must be between 0 and 9', 'error')
+      toast.error('Decimals must be between 0 and 9')
       return
     }
 
     if (isNaN(supplyValue) || supplyValue <= 0) {
-      showToast('Initial supply must be greater than 0', 'error')
+      toast.error('Initial supply must be greater than 0')
       return
     }
 

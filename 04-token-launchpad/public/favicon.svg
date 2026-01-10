@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#bg)"/>
+  <!-- Rocket body -->
+  <path d="M32 12 L40 32 L36 34 L36 44 L32 48 L28 44 L28 34 L24 32 Z" fill="#f5f5f5"/>
+  <!-- Rocket window -->
+  <circle cx="32" cy="26" r="4" fill="#7c3aed"/>
+  <!-- Rocket flames -->
+  <path d="M29 48 L32 56 L35 48" fill="#fbbf24"/>
+  <path d="M30 48 L32 54 L34 48" fill="#f97316"/>
+  <!-- Rocket fins -->
+  <path d="M24 32 L20 38 L28 36 Z" fill="#e5e5e5"/>
+  <path d="M40 32 L44 38 L36 36 Z" fill="#e5e5e5"/>
+  <!-- Shine effect -->
+  <circle cx="32" cy="32" r="30" fill="url(#shine)"/>
+</svg>

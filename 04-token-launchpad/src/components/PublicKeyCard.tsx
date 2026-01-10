@@ -1,5 +1,5 @@
+import toast from 'react-hot-toast'
 import Button from '../ui/Button'
-import { useToast } from '../ui/Toast'
 import { copyToClipboard } from '../lib/clipboard'
 
 interface PublicKeyCardProps {
@@ -8,14 +8,12 @@ interface PublicKeyCardProps {
 }
 
 export default function PublicKeyCard ({ label, publicKey }: PublicKeyCardProps) {
-  const { showToast } = useToast()
-
   async function handleCopy () {
     const success = await copyToClipboard(publicKey)
     if (success) {
-      showToast(`${label} copied to clipboard!`, 'success')
+      toast.success(`${label} copied to clipboard!`)
     } else {
-      showToast('Failed to copy to clipboard', 'error')
+      toast.error('Failed to copy to clipboard')
     }
   }
 

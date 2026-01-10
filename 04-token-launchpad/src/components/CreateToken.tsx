@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { SendTransactionError } from '@solana/web3.js'
+import toast from 'react-hot-toast'
 import TokenForm from './TokenForm'
 import PublicKeyCard from './PublicKeyCard'
-import { useToast } from '../ui/Toast'
 import {
   buildCreateTokenTransaction,
   type TokenFormData
@@ -45,7 +45,6 @@ function getErrorMessage (error: unknown): string {
 export default function CreateToken () {
   const wallet = useWallet()
   const { connection } = useConnection()
-  const { showToast } = useToast()
   const [mintPublicKey, setMintPublicKey] = useState<string | null>(null)
   const [ataKey, setAtaKey] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -54,12 +53,12 @@ export default function CreateToken () {
 
   async function handleCreateToken (formData: TokenFormData) {
     if (!wallet.publicKey) {
-      showToast('Connect to a wallet first!', 'error')
+      toast.error('Connect to a wallet first!')
       return
     }
 
     if (!wallet.signTransaction) {
-      showToast('Wallet does not support signing transactions', 'error')
+      toast.error('Wallet does not support signing transactions')
       return
     }
 
@@ -86,19 +85,18 @@ export default function CreateToken () {
 
       setMintPublicKey(result.mintAddress)
       setAtaKey(result.ataAddress)
-      showToast('Token created successfully!', 'success')
+      toast.success('Token created successfully!')
     } catch (error) {
       console.error('Token creation error:', error)
-      showToast(getErrorMessage(error), 'error')
+      toast.error(getErrorMessage(error))
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className='w-full flex justify-center items-center'>
-      <div className='flex flex-col justify-center items-center gap-5 m-5 border border-neutral-800 rounded-2xl p-8 transition-all duration-500 shadow-2xl shadow-black/50 bg-neutral-900 w-5xl'>
-        <p className='font-bold text-lg'>Create a new Token</p>
+    <div className='flex flex-col justify-center items-center gap-5 border border-neutral-800 rounded-2xl p-8 transition-all duration-500 shadow-2xl shadow-black/50 bg-neutral-900'>
+      <p className='font-bold text-2xl'>Solana Token Launchpad</p>
 
         <TokenForm
           onSubmit={handleCreateToken}
@@ -109,23 +107,22 @@ export default function CreateToken () {
           onRevokeFreezeChange={setRevokeFreeze}
         />
 
-        {(mintPublicKey || ataKey) && (
-          <div className='flex gap-4 mt-4'>
-            {mintPublicKey && (
-              <PublicKeyCard
-                label='Token Mint Public Key'
-                publicKey={mintPublicKey}
-              />
-            )}
-            {ataKey && (
-              <PublicKeyCard
-                label='Associated Token Account'
-                publicKey={ataKey}
-              />
-            )}
-          </div>
-        )}
-      </div>
+      {(mintPublicKey || ataKey) && (
+        <div className='flex gap-4 mt-4'>
+          {mintPublicKey && (
+            <PublicKeyCard
+              label='Token Mint Public Key'
+              publicKey={mintPublicKey}
+            />
+          )}
+          {ataKey && (
+            <PublicKeyCard
+              label='Associated Token Account'
+              publicKey={ataKey}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }
