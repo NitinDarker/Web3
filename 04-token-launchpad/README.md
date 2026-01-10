@@ -2,6 +2,8 @@
 
 A Solana token launchpad that allows users to create SPL tokens using the Token-2022 program.
 
+> Deployed to: https://token-launchpadd.vercel.app/
+
 ## Screenshot
 
 ![Token Launchpad Screenshot](/public/image.png)
