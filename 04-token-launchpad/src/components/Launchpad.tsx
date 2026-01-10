@@ -7,19 +7,18 @@ import {
   WalletModalProvider,
   WalletMultiButton
 } from '@solana/wallet-adapter-react-ui'
+import '@solana/wallet-adapter-react-ui/styles.css'
 import CreateToken from './CreateToken'
 import NetworkControls from './NetworkControls'
 
-type NetworkType = 'devnet' | 'mainnet'
-
-const ENDPOINTS: Record<NetworkType, string> = {
+const endpoints = {
   devnet: 'https://api.devnet.solana.com',
   mainnet: 'https://api.mainnet-beta.solana.com'
 }
 
 export default function Launchpad () {
-  const [network, setNetwork] = useState<NetworkType>('devnet')
-  const endpoint = ENDPOINTS[network]
+  const [network, setNetwork] = useState<'devnet' | 'mainnet'>('devnet')
+  const endpoint = endpoints[network]
 
   return (
     <div className='relative min-h-full text-neutral-100 bg-neutral-950'>
@@ -32,11 +31,13 @@ export default function Launchpad () {
               <div className='flex justify-center pt-5'>
                 <WalletMultiButton />
               </div>
-
               <div className='w-full flex justify-center items-center'>
                 <div className='flex flex-col m-5 w-5xl'>
                   <div className='mb-3'>
-                    <NetworkControls network={network} setNetwork={setNetwork} />
+                    <NetworkControls
+                      network={network}
+                      setNetwork={setNetwork}
+                    />
                   </div>
                   <CreateToken />
                 </div>

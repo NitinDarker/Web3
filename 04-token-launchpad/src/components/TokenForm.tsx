@@ -6,15 +6,6 @@ import Textarea from '../ui/Textarea'
 import Toggle from '../ui/Toggle'
 import type { TokenFormData } from '../lib/createTokenTransaction'
 
-interface TokenFormProps {
-  onSubmit: (formData: TokenFormData) => void
-  isLoading: boolean
-  revokeMint: boolean
-  revokeFreeze: boolean
-  onRevokeMintChange: (value: boolean) => void
-  onRevokeFreezeChange: (value: boolean) => void
-}
-
 export default function TokenForm ({
   onSubmit,
   isLoading,
@@ -22,7 +13,7 @@ export default function TokenForm ({
   revokeFreeze,
   onRevokeMintChange,
   onRevokeFreezeChange
-}: TokenFormProps) {
+}: any) {
   const tokenNameRef = useRef<HTMLInputElement>(null)
   const symbolRef = useRef<HTMLInputElement>(null)
   const decimalsRef = useRef<HTMLInputElement>(null)

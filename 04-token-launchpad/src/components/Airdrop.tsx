@@ -5,11 +5,7 @@ import toast from 'react-hot-toast'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
 
-interface AirdropProps {
-  onSuccess?: () => void
-}
-
-export default function Airdrop ({ onSuccess }: AirdropProps) {
+export default function Airdrop ({ onSuccess }: any) {
   const { connection } = useConnection()
   const wallet = useWallet()
   const [loading, setLoading] = useState(false)
@@ -50,11 +46,7 @@ export default function Airdrop ({ onSuccess }: AirdropProps) {
       onSuccess?.()
     } catch (error) {
       console.error('Airdrop failed:', error)
-      if (error instanceof Error && error.message.includes('429')) {
-        toast.error('Rate limited. Please wait and try again.')
-      } else {
-        toast.error('Airdrop failed. Please try again.')
-      }
+      toast.error('Airdrop failed. Please try again.')
     } finally {
       setLoading(false)
     }

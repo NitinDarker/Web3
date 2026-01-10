@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { SendTransactionError } from '@solana/web3.js'
 import toast from 'react-hot-toast'
 import TokenForm from './TokenForm'
 import PublicKeyCard from './PublicKeyCard'
@@ -8,39 +7,6 @@ import {
   buildCreateTokenTransaction,
   type TokenFormData
 } from '../lib/createTokenTransaction'
-
-function getErrorMessage (error: unknown): string {
-  if (error instanceof SendTransactionError) {
-    return 'Transaction failed. Please check your wallet balance.'
-  }
-
-  if (error instanceof Error) {
-    const message = error.message.toLowerCase()
-
-    if (message.includes('user rejected')) {
-      return 'Transaction cancelled by user'
-    }
-    if (message.includes('insufficient')) {
-      return 'Insufficient SOL balance for transaction'
-    }
-    if (message.includes('timeout') || message.includes('timed out')) {
-      return 'Transaction timed out. Please try again.'
-    }
-    if (message.includes('blockhash')) {
-      return 'Transaction expired. Please try again.'
-    }
-    if (message.includes('network') || message.includes('fetch')) {
-      return 'Network error. Please check your connection.'
-    }
-    if (message.includes('cloudinary') || message.includes('upload')) {
-      return 'Failed to upload metadata. Please try again.'
-    }
-
-    return error.message
-  }
-
-  return 'An unexpected error occurred'
-}
 
 export default function CreateToken () {
   const wallet = useWallet()
@@ -64,7 +30,6 @@ export default function CreateToken () {
 
     try {
       setIsLoading(true)
-
       const { transaction, result } = await buildCreateTokenTransaction(
         connection,
         wallet.publicKey,
@@ -88,7 +53,7 @@ export default function CreateToken () {
       toast.success('Token created successfully!')
     } catch (error) {
       console.error('Token creation error:', error)
-      toast.error(getErrorMessage(error))
+      toast.error('Transaction failed. Please try again.')
     } finally {
       setIsLoading(false)
     }

@@ -23,7 +23,7 @@ export default function Modal ({ isOpen, onClose, children, title }: ModalProps)
       document.body.style.overflow = 'unset'
     }
   }, [isOpen, onClose])
-
+1
   if (!isOpen) return null
 
   return (
@@ -31,9 +31,9 @@ export default function Modal ({ isOpen, onClose, children, title }: ModalProps)
       className='fixed inset-0 z-50 flex items-center justify-center'
       onClick={onClose}
     >
-      <div className='absolute inset-0 bg-black/60 backdrop-blur-sm' />
+      <div className='absolute inset-0 bg-black/50 backdrop-blur-sm' />
       <div
-        className='relative bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl shadow-black/50 max-w-md w-full mx-4 animate-slide-in'
+        className='relative bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl shadow-black/50 max-w-md w-full mx-4 animate-fade-out'
         onClick={e => e.stopPropagation()}
       >
         <div className='flex items-center justify-between p-4 border-b border-neutral-800'>
