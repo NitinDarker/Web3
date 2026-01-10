@@ -9,6 +9,7 @@ import {
 } from '@solana/wallet-adapter-react-ui'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import CreateToken from './CreateToken'
+import GithubLink from './GithubLink'
 import NetworkControls from './NetworkControls'
 
 const endpoints = {
@@ -28,6 +29,7 @@ export default function Launchpad () {
         <WalletProvider wallets={[]} autoConnect>
           <WalletModalProvider>
             <div className='relative z-10'>
+              <GithubLink />
               <div className='flex justify-center pt-5'>
                 <WalletMultiButton />
               </div>
