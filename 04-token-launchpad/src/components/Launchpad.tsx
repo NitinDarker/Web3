@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useState } from 'react'
 import {
   ConnectionProvider,
   WalletProvider
@@ -7,20 +7,26 @@ import {
   WalletModalProvider,
   WalletMultiButton
 } from '@solana/wallet-adapter-react-ui'
-import { useNetwork } from '../context/NetworkContext'
 import CreateToken from './CreateToken'
 import NetworkControls from './NetworkControls'
 
+type NetworkType = 'devnet' | 'mainnet'
+
+const ENDPOINTS: Record<NetworkType, string> = {
+  devnet: 'https://api.devnet.solana.com',
+  mainnet: 'https://api.mainnet-beta.solana.com'
+}
+
 export default function Launchpad () {
-  const { endpoint, walletNetwork } = useNetwork()
-  const wallets = useMemo(() => [], [walletNetwork])
+  const [network, setNetwork] = useState<NetworkType>('devnet')
+  const endpoint = ENDPOINTS[network]
 
   return (
     <div className='relative min-h-full text-neutral-100 bg-neutral-950'>
       <div className='absolute inset-0 bg-size-[40px_40px] bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]' />
       <div className='absolute inset-0 pointer-events-none mask-[radial-gradient(ellipse_at_center,transparent_40%,black)] bg-neutral-950' />
       <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
+        <WalletProvider wallets={[]} autoConnect>
           <WalletModalProvider>
             <div className='relative z-10'>
               <div className='flex justify-center pt-5'>
@@ -30,7 +36,7 @@ export default function Launchpad () {
               <div className='w-full flex justify-center items-center'>
                 <div className='flex flex-col m-5 w-5xl'>
                   <div className='mb-3'>
-                    <NetworkControls />
+                    <NetworkControls network={network} setNetwork={setNetwork} />
                   </div>
                   <CreateToken />
                 </div>

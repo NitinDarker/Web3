@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { useNetwork } from '../context/NetworkContext'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
 import Airdrop from './Airdrop'
 
-export default function NetworkControls () {
-  const { network, setNetwork } = useNetwork()
+type NetworkType = 'devnet' | 'mainnet'
+
+interface NetworkControlsProps {
+  network: NetworkType
+  setNetwork: (network: NetworkType) => void
+}
+
+export default function NetworkControls ({ network, setNetwork }: NetworkControlsProps) {
   const [isAirdropModalOpen, setIsAirdropModalOpen] = useState(false)
 
   return (
