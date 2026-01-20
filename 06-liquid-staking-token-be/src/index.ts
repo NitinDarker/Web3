@@ -1,4 +1,5 @@
 import express from "express";
+import { mintTokens } from "./lib/mintToken";
 const app = express();
 
 app.use(express.json())
@@ -10,11 +11,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/helius", (req, res) => {
-  const fromAddress = req.body.from;
+app.post("/helius", async (req, res) => {
   const toAddress = req.body.to;
-  const amount = req.body.amount;
-
+  const amount = req.body.amount / 1e9;
+  await mintTokens(toAddress, amount)
   res.status(200).json({
     success: true,
     message: "Transaction successful"
