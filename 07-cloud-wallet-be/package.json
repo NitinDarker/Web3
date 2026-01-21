@@ -1,0 +1,23 @@
+{
+  "name": "07-cloud-wallet-be",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "prisma": "^7.2.0"
+  }
+}
