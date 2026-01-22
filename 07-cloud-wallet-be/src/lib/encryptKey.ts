@@ -12,7 +12,7 @@ export function encryptKey(privateKey: string) {
   const authTag = cipher.getAuthTag().toString("hex");
 
   return {
-    encryptedKey: encrypted,
+    encryptedKey: encrypted.toString(),
     iv: iv.toString("hex"),
     authTag: authTag,
   };

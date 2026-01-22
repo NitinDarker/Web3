@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
-app.use("/app/v1", router);
+app.use("/api/v1", router);
 
 app.get("/", (req, res) => {
   res.status(200).json({

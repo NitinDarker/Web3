@@ -15,11 +15,11 @@ model User {
 }
 
 model Wallet {
-  id            String @id @default(uuid())
-  publicKey     String
-  encrypted_key String
-  iv            String
-  auth_tag      String
-  userId        String
-  user          User   @relation(fields: [userId], references: [id])
+  id           String @id @default(uuid())
+  publicKey    String
+  encryptedKey String
+  iv           String
+  authTag     String
+  userId       String
+  user         User   @relation(fields: [userId], references: [id])
 }
