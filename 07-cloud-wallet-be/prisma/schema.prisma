@@ -19,7 +19,7 @@ model Wallet {
   publicKey    String
   encryptedKey String
   iv           String
-  authTag     String
+  authTag      String
   userId       String
   user         User   @relation(fields: [userId], references: [id])
 }
