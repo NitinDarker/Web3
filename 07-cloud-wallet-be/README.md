@@ -10,7 +10,7 @@ To run:
 
 ```bash
 # Start Postgres locally (using docker)
-docker run -d -p 5432:5432 -v sol-wallet-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=12345 --name sol-wallet postgres
+docker run -p 5432:5432 -v sol-wallet-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=nitin111 --name sol-wallet postgres
 ```
 
 ```bash

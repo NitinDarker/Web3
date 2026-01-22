@@ -8,9 +8,18 @@ datasource db {
 }
 
 model User {
-  id         String @id @default(uuid())
-  username   String @unique
-  password   String
-  publicKey  String
-  privateKey String
+  id       String   @id @default(uuid())
+  username String   @unique
+  password String
+  wallets  Wallet[]
+}
+
+model Wallet {
+  id            String @id @default(uuid())
+  publicKey     String
+  encrypted_key String
+  iv            String
+  auth_tag      String
+  userId        String
+  user          User   @relation(fields: [userId], references: [id])
 }

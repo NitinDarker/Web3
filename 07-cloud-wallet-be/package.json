@@ -7,6 +7,7 @@
     "dev": "bun run src/index.ts"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/bun": "latest",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6"
@@ -17,8 +18,9 @@
   "dependencies": {
     "@prisma/client": "^7.3.0",
     "@solana/web3.js": "^1.98.4",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "prisma": "^7.2.0"
+    "prisma": "^7.3.0"
   }
 }
