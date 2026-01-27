@@ -23,10 +23,12 @@ export default async function signin(req: Request, res: Response) {
     if (!user) {
       throw new Error("User with this username not found!");
     }
-    if (!bcrypt.compareSync(password, user.password)) {
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new Error("Wrong password");
     }
-    const token = jwt.sign({ username }, process.env.JWT_KEY as string);
+    const token = jwt.sign({ username }, process.env.JWT_KEY as string, {
+      expiresIn: "24h",
+    });
     return res.status(201).json({
       success: true,
       jwt: token
@@ -35,7 +37,7 @@ export default async function signin(req: Request, res: Response) {
     console.log(e);
     return res.status(401).json({
       success: false,
-      error: e,
+      error: e.message,
     });
   }
 }
